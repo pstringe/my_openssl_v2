@@ -6,7 +6,7 @@
 #    By: pstringe <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/08/02 14:49:53 by pstringe          #+#    #+#              #
-#    Updated: 2018/10/31 11:39:04 by pstringe         ###   ########.fr        #
+#    Updated: 2018/10/31 18:41:35 by pstringe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,11 +17,9 @@ LIB = libft.a
 INCD = ./includes/
 SRCD = ./srcs/
 LIBD = $(INCD)libft/
-SRCS = openssl\
-	   md5\
-	   sha-256\
+SRCS = openssl
 OBJS = $(patsubst $(SRCD)%, %.o, $(SRCS))
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Wextra
 DFLAGS = -g
 SFLAGS = -fsanitize=address -fno-omit-frame-pointer
 

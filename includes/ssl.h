@@ -1,19 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_openssl.h                                       :+:      :+:    :+:   */
+/*   ssl.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/31 12:22:28 by pstringe          #+#    #+#             */
-/*   Updated: 2018/10/31 18:19:25 by pstringe         ###   ########.fr       */
+/*   Created: 2018/10/31 15:01:38 by pstringe          #+#    #+#             */
+/*   Updated: 2018/10/31 16:09:57 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_OPENSSL_H
-# define FT_OPENSSL_H
-# include "libft/libft.h"
-# include "ssl.h"
-# include "md5.h"
-# include "sha256.h"
+#ifndef SSL_H
+# define SSL_H
+# include "types/s_ssl.h"
+
+void	ssl_init(t_ssl *ssl);
+void	ssl_commandline_parse(t_ssl *ssl, int argc, char **argv);
+
 #endif

@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_openssl.h                                       :+:      :+:    :+:   */
+/*   sha256.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/31 12:22:28 by pstringe          #+#    #+#             */
-/*   Updated: 2018/10/31 18:19:25 by pstringe         ###   ########.fr       */
+/*   Created: 2018/10/31 15:22:50 by pstringe          #+#    #+#             */
+/*   Updated: 2018/10/31 15:26:24 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_OPENSSL_H
-# define FT_OPENSSL_H
-# include "libft/libft.h"
-# include "ssl.h"
-# include "md5.h"
-# include "sha256.h"
+#ifndef SHA256_H
+# define SHA256_H
+# include "types/s_sha256.h"
+
+void	sha256(t_sha256 *state, t_expr *expr);
 #endif

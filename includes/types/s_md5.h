@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_openssl.h                                       :+:      :+:    :+:   */
+/*   s_md5.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/31 12:22:28 by pstringe          #+#    #+#             */
-/*   Updated: 2018/10/31 18:19:25 by pstringe         ###   ########.fr       */
+/*   Created: 2018/10/31 15:17:19 by pstringe          #+#    #+#             */
+/*   Updated: 2018/10/31 15:21:20 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_OPENSSL_H
-# define FT_OPENSSL_H
-# include "libft/libft.h"
-# include "ssl.h"
-# include "md5.h"
-# include "sha256.h"
+#ifndef S_MD5
+# define S_MD5
+typedef struct	s_md5
+{
+}				t_md5;
 #endif
