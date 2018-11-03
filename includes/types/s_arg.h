@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 14:40:26 by pstringe          #+#    #+#             */
-/*   Updated: 2018/10/31 18:41:38 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/03 15:03:01 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 
 typedef struct	s_arg
 {
-	int		origin;
-	char 	*text;
+	char	*origin;
+	char 	*msg;
 	t_queue *blocks;
 	int32_t	hash[4];
+
+	void	(*print)(struct s_arg*);
 }				t_arg;
 #endif

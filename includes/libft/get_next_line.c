@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/09/20 08:03:19 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/02 09:41:04 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int		ft(char **arr, char **line)
 		*line = tmp;
 		ft_memdel((void**)arr);
 	}
-	return (1);
+	return (ft_strlen(*line));
 }
 
 int		get_next_line(const int fd, char **line)

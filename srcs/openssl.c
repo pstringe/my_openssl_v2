@@ -6,12 +6,31 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 11:39:49 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/02 09:23:35 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/03 15:59:28 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_openssl.h"
 
+t_queue		*ft_queuenw(void *n, size_t size)
+{
+	t_queue	*q;
+	t_list	*tmp;
+
+	q = (t_queue*)ft_memalloc(sizeof(t_queue));
+	if (!n || !size)
+	{
+		q->tail = NULL;
+		q->head = NULL;
+	}
+	else
+	{
+		tmp = ft_lstnew(n, size);
+		q->tail = tmp;
+		q->head = tmp;
+	}
+	return (q);
+}
 /*
 ** Message digest algorithm
 */
@@ -37,6 +56,7 @@ void	sha256(t_sha256 *state, t_expr *expr)
 {
 }
 
+
 /*
 **	command line parse must first check for msg txt in stdin and then check for
 **	file/stringarguments. For the latter. We will first attempt to see if the
@@ -47,9 +67,21 @@ void	sha256(t_sha256 *state, t_expr *expr)
 
 void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
 {
+	char	*msg;
+	t_expr	*expr;
+	t_arg	*args;
+
+	expr = ssl->expr;
+	expr->init(ssl);
+	msg = NULL;
+	if (get_next_line(0, &msg) >= 0)
+		expr->argnw(&expr, "file", msg);
+	
+	/*Just a test to make sure the msg is being enqueued properly*/
+	expr->print(&expr);
+	
 	/*
-	 t_expr	*expr;
-	t_queue *messages;
+	t_expr	*expr;
 	
 	expr = ssl->expression;
 	messages = expr->message_queue;
@@ -58,7 +90,6 @@ void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
 		ft_enqueue(&messages,);
 	*/
 }
-
 
 /*
 **	global variable used to initialize command dispatch table 
@@ -71,6 +102,99 @@ t_cmd	g_cmds[3] = {
 };
 
 /*
+**	argument funtions
+*/
+
+/*
+**	a function the print the argument, In this case I must pass the 
+**	specific argument pointer since there may be many args per ssl instance.
+*/
+
+void	argument_print(t_arg *arg)
+{
+	int i;
+	int	l;
+	
+	ft_printf("arg origin: %s", arg->origin);
+	i = 0;
+	l = ft_strlen(arg->msg);
+	while (i < l)
+	{
+		ft_printf("%.80s\n", arg->msg + i);
+		i += 80;
+	}
+}
+
+/*
+**	function for allocating a new argument and initializing it with a value
+*/
+
+t_arg	*argument_new(t_ssl *ssl, char *msg, char *origin)
+{
+	t_arg	*arg;
+	
+	arg = ft_memalloc(sizeof(t_arg));
+	arg->origin = ft_strdup(origin);
+	arg->msg = ft_strdup(msg);
+	arg->print = argument_print; 
+	return (arg);
+}
+
+/*
+**	expression functions
+*/
+
+	
+/*
+**	print function to display contents of the expression
+*/
+
+void	expression_print(t_ssl *ssl)
+{
+	t_expr 	*expr;
+	t_list	*tmp;
+	t_arg	*arg;
+	
+	expr = ssl->expr;
+	tmp = expr->args->head;
+	while (tmp)
+	{
+		arg = (t_arg*)(tmp->content);
+		arg->print(arg);
+		tmp = tmp->next;
+	}	
+}
+
+/*
+**	function for adding an argument to the args queue based on msg text
+*/
+
+void	expression_add_argument(t_ssl *ssl, char *msg, char *origin)
+{
+	t_expr	*expr;
+	t_arg	*arg;
+	
+	expr = ssl->expr;
+	arg = argument_new(msg, origin, msg);
+	ft_enqueue(expr->args, arg, sizeof(t_arg));
+}	
+
+
+/*
+**	expression initialization function
+*/
+
+void 	ssl_expr_init(t_ssl *ssl)
+{
+	t_expr	*expr;
+
+	expr = ssl->expr;
+	expr->args = ft_queuenw(NULL, 0);
+	expr->argnw = expression_add_argument;
+	expr->print = expression_print;
+}
+
+/*
 ** ssl initialization function accepts an array of strings representing input
 ** preceeded by the length of the array.
 */
@@ -78,11 +202,12 @@ t_cmd	g_cmds[3] = {
 void	ssl_init(t_ssl *ssl)
 { 
 	ssl->cmds = g_cmds;
-	ssl->expr = NULL;
 	ssl->read = ssl_cdl_parse;
 	ssl->eval = NULL;					/*this will be determined based on 
 										  the value of the command after
 										  parsing */
+	ssl->expr = ft_memalloc(sizeof(t_expr));
+	ssl->expr->init = ssl_expr_init;
 }
 
 /*
@@ -98,7 +223,7 @@ int 	main(int argc, char ** argv)
 	t_ssl	ssl;
 
 	ssl_init(&ssl);
-	//ssl.read(&ssl, int argc, char **argv);
+	ssl.read(&ssl, argc, argv);
 	//ssl.eval(&ssl);
 	//ssl.output(&ssl);
 }
