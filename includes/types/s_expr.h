@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 14:37:03 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/02 13:52:22 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/03 16:25:07 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 typedef struct 	s_expr
 {
 	t_queue		*args;
-	t_cmd		*cmd;
+	t_cmd		cmd;
 	int			ops;
 
 	void		(*argnw)(struct s_expr*, char*, char*);

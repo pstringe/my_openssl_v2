@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 11:39:49 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/03 15:59:28 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/03 20:43:50 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ t_queue		*ft_queuenw(void *n, size_t size)
 	}
 	return (q);
 }
+
 /*
 ** Message digest algorithm
 */
@@ -58,14 +59,10 @@ void	sha256(t_sha256 *state, t_expr *expr)
 
 
 /*
-**	command line parse must first check for msg txt in stdin and then check for
-**	file/stringarguments. For the latter. We will first attempt to see if the
-**	string is a file. If yes we will add its contents to our msg_text list. 
-**	Otherwise, we will add the string itself
+**	function to retrieve data from stdin
 */
 
-
-void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
+void	get_stdin(t_ssl *ssl)
 {
 	char	*msg;
 	t_expr	*expr;
@@ -76,19 +73,35 @@ void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
 	msg = NULL;
 	if (get_next_line(0, &msg) >= 0)
 		expr->argnw(&expr, "file", msg);
+}
+
+/*
+**	command line parse must first check for msg txt in stdin and then check for
+**	file/stringarguments. For the latter. We will first attempt to see if the
+**	string is a file. If yes we will add its contents to our msg_text list. 
+**	Otherwise, we will add the string itself
+*/
+
+
+void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
+{
+	int	i;
+	int	j;
+
+	get_stdin(ssl);
 	
 	/*Just a test to make sure the msg is being enqueued properly*/
-	expr->print(&expr);
-	
-	/*
-	t_expr	*expr;
-	
-	expr = ssl->expression;
-	messages = expr->message_queue;
-	//check of stdin is open and read contents into queue
-	if (get_next_line(0, *line))
-		ft_enqueue(&messages,);
-	*/
+	ssl->expr->print(&ssl->expr);
+	/*end of test*/
+
+	i = -1;
+	while (ssl->cmds[++i].name)
+		if (!ft_strncmp(ssl->cmds[i].name, argv[1], ft_strlen(ssl->cmds[i].name)))
+			ft_memcpy((void*)&(ssl->expr->cmd), (const void*)&(ssl->cmds[i]), sizeof(t_cmd));
+
+	/*just a test to verify command parsing works properly*/
+	ft_printf("The command is: %s\n", ssl->expr->cmd.name);
+	/*end of test*/
 }
 
 /*
@@ -98,7 +111,7 @@ void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
 t_cmd	g_cmds[3] = {
 	{"md5", md5},
 	{"sha256", sha256},
-	NULL
+	{NULL, NULL}
 };
 
 /*
