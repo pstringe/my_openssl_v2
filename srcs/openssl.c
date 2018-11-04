@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 11:39:49 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/03 21:20:31 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/03 22:03:02 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	get_stdin(t_ssl *ssl)
 	expr->init(ssl);
 	msg = NULL;
 	if (get_next_line(0, &msg) >= 0)
-		expr->argnw(&expr, "file", msg);
+		expr->argnw(&expr, "stdin", msg);
 }
 
 /*
@@ -96,7 +96,7 @@ void	get_cmd(t_ssl *ssl, char **argv)
 **	retrieve options from cmd
 */
 
-void 	get_ops(t_ssl *ssl, char **argv, int argc)
+int 	get_ops(t_ssl *ssl, char **argv, int argc)
 {
 	t_expr	*expr;
 	int 	i;
@@ -114,6 +114,23 @@ void 	get_ops(t_ssl *ssl, char **argv, int argc)
 			expr->ops |= argv[i][j] == 'r' ? OP_R : 0;
 			expr->ops |= argv[i][j] == 's' ? OP_S : 0;
 		}
+	}
+	return (i);
+}
+
+void	get_args(t_ssl *ssl, int idx, int argc, char **argv)
+{
+	char	*msg;
+	int 	fd;
+
+	idx--;
+	while (++idx < argc)
+	{
+		if ((fd = open(argv[idx], O_RDONLY)) != -1)
+			while (get_next_line(fd, &msg) > 0);
+		else
+			msg = ft_strdup(argv[idx]);
+		ssl->expr->argnw(&ssl->expr, fd > 0 ? "file" : "arg", msg);
 	}
 }
 
@@ -139,12 +156,16 @@ void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
 	ft_printf("The command is: %s\n", ssl->expr->cmd.name);
 	/*end of test*/
 
-	get_ops(ssl, argv, argc);
+	get_args(ssl, get_ops(ssl, argv, argc), argc, argv);
 
 	/*just a test to make sure options were rretrieved propperly*/
 	int o = ssl->expr->ops;
 	ft_printf("p: %d, q: %d, r: %d, s: %d\n", o & OP_P, o & OP_Q, o & OP_R, o & OP_S);
-	/*end of test*/	
+	/*end of test*/
+
+	/*Another test to see that the remaining arguments were enqueued*/
+	ssl->expr->print(&ssl->expr);
+	/*end of test*/
 }
 
 /*
@@ -171,7 +192,10 @@ void	argument_print(t_arg *arg)
 	int i;
 	int	l;
 	
-	ft_printf("arg origin: %s", arg->origin);
+	ft_printf("arg origin:\t%s\n", arg->origin);
+	ft_printf("arg message:\t%s\n", arg->msg);
+	
+	/*
 	i = 0;
 	l = ft_strlen(arg->msg);
 	while (i < l)
@@ -179,6 +203,7 @@ void	argument_print(t_arg *arg)
 		ft_printf("%.80s\n", arg->msg + i);
 		i += 80;
 	}
+	*/
 }
 
 /*
