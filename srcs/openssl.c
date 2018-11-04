@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 11:39:49 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/03 20:43:50 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/03 21:20:31 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ void	sha256(t_sha256 *state, t_expr *expr)
 {
 }
 
+/*
+**	commandline parsing functions
+*/
 
 /*
 **	function to retrieve data from stdin
@@ -76,6 +79,45 @@ void	get_stdin(t_ssl *ssl)
 }
 
 /*
+**	retrieves the ssl command from the command line
+*/
+
+void	get_cmd(t_ssl *ssl, char **argv)
+{
+	int	i;
+	
+	i = -1;
+	while (ssl->cmds[++i].name)
+		if (!ft_strncmp(ssl->cmds[i].name, argv[1], ft_strlen(ssl->cmds[i].name)))
+			ft_memcpy(&(ssl->expr->cmd), &(ssl->cmds[i]), sizeof(t_cmd));
+}
+
+/*
+**	retrieve options from cmd
+*/
+
+void 	get_ops(t_ssl *ssl, char **argv, int argc)
+{
+	t_expr	*expr;
+	int 	i;
+	int		j;
+	
+	expr = ssl->expr;
+	i = 1;
+	while (++i < argc && argv[i][0] == '-')
+	{
+		j = 0;
+		while (argv[i][++j])
+		{
+			expr->ops |= argv[i][j] == 'p' ? OP_P : 0;
+			expr->ops |= argv[i][j] == 'q' ? OP_Q : 0;
+			expr->ops |= argv[i][j] == 'r' ? OP_R : 0;
+			expr->ops |= argv[i][j] == 's' ? OP_S : 0;
+		}
+	}
+}
+
+/*
 **	command line parse must first check for msg txt in stdin and then check for
 **	file/stringarguments. For the latter. We will first attempt to see if the
 **	string is a file. If yes we will add its contents to our msg_text list. 
@@ -85,23 +127,24 @@ void	get_stdin(t_ssl *ssl)
 
 void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
 {
-	int	i;
-	int	j;
-
 	get_stdin(ssl);
 	
 	/*Just a test to make sure the msg is being enqueued properly*/
 	ssl->expr->print(&ssl->expr);
 	/*end of test*/
 
-	i = -1;
-	while (ssl->cmds[++i].name)
-		if (!ft_strncmp(ssl->cmds[i].name, argv[1], ft_strlen(ssl->cmds[i].name)))
-			ft_memcpy((void*)&(ssl->expr->cmd), (const void*)&(ssl->cmds[i]), sizeof(t_cmd));
-
+	get_cmd(ssl, argv);
+	
 	/*just a test to verify command parsing works properly*/
 	ft_printf("The command is: %s\n", ssl->expr->cmd.name);
 	/*end of test*/
+
+	get_ops(ssl, argv, argc);
+
+	/*just a test to make sure options were rretrieved propperly*/
+	int o = ssl->expr->ops;
+	ft_printf("p: %d, q: %d, r: %d, s: %d\n", o & OP_P, o & OP_Q, o & OP_R, o & OP_S);
+	/*end of test*/	
 }
 
 /*
@@ -202,6 +245,7 @@ void 	ssl_expr_init(t_ssl *ssl)
 	t_expr	*expr;
 
 	expr = ssl->expr;
+	expr->ops = 0;
 	expr->args = ft_queuenw(NULL, 0);
 	expr->argnw = expression_add_argument;
 	expr->print = expression_print;
