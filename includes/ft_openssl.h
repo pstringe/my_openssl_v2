@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 12:22:28 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/03 21:05:21 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/05 14:23:48 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # define OP_R			8
 # define OP_S			16
 # include "libft/libft.h"
+# include "block.h"
 # include "ssl.h"
 # include "md5.h"
 # include "sha256.h"

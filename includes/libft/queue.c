@@ -6,13 +6,12 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/13 08:25:56 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/03 15:59:30 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/04 10:28:30 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-/*
 t_queue		*ft_queuenw(void *n, size_t size)
 {
 	t_queue	*q;
@@ -32,7 +31,6 @@ t_queue		*ft_queuenw(void *n, size_t size)
 	}
 	return (q);
 }
-*/
 
 void		ft_enqueue(struct s_queue *q, void *n, size_t size)
 {

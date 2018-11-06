@@ -6,14 +6,15 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 15:13:51 by pstringe          #+#    #+#             */
-/*   Updated: 2018/10/31 15:16:21 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/04 10:40:14 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MD5_H
 # define MD5_H
+# include "types/s_ssl.h"
 # include "types/s_md5.h"
 # include "types/s_expr.h"
 
-void	md5(t_md5 *state, t_expr *expr);
+void	md5(t_ssl *ssl);
 #endif

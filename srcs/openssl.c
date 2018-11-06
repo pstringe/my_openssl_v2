@@ -6,30 +6,100 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 11:39:49 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/03 22:03:02 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/05 16:16:11 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_openssl.h"
 
-t_queue		*ft_queuenw(void *n, size_t size)
-{
-	t_queue	*q;
-	t_list	*tmp;
+/*
+**	a function to display blocks as they are enqueued or dequeued for testing purposes
+*/
 
-	q = (t_queue*)ft_memalloc(sizeof(t_queue));
-	if (!n || !size)
+void 	block_print(t_block *block)
+{
+	ft_printf("block:\n%s\n", block->text);
+}
+
+/*
+**	given a postion in a string, initializes a new block and copies 64 bytes
+**	that position or until a null byte is encountered, the number of copied 
+**	bytes will also be assigned to block->length.
+**	We also increment the position of the given string here. We need to pass in
+** 	a new pointer to avoid a memory leak.
+*/
+
+t_block 	*block_new(char **pos)
+{
+	t_block *block;
+	int		l;
+
+	block = NULL;
+	if (**pos)
 	{
-		q->tail = NULL;
-		q->head = NULL;
+		block = ft_memalloc(sizeof(t_block));
+		block->text = ft_strnew(64);
+		ft_memcpy(block->text, *pos, (l = ft_strlen(*pos)) < 64 ? l : 64);
+		*pos += l < 64 ? l : 64;
+		block->print = block_print;
 	}
-	else
+	return (block);
+}
+
+
+/*
+**	break the msg text into 64 byte (512bit) blocks
+*/
+
+void	arg_block(t_arg *arg)
+{
+	int		i;
+	int 	j;
+	char 	*msg;
+	t_block	*block;
+
+	arg->blocks = ft_queuenw(NULL, 0);
+	msg = arg->msg;		/*the new block function will increment this position, 
+						we copy the pointer to maintain the original position 
+						thus avoiding a leak*/
+	i = 0;
+	while ((block = block_new(&msg)))
 	{
-		tmp = ft_lstnew(n, size);
-		q->tail = tmp;
-		q->head = tmp;
+		block->print(block);
+		ft_enqueue(arg->blocks, block, sizeof(t_block));
+		free(block);
 	}
-	return (q);
+}
+
+/*
+**	prepare the argument by breaking it down into blocks and padding it.
+*/
+
+void	arg_prep(t_ssl *ssl, t_arg *arg)
+{
+	arg->block(arg);
+	//arg->pad(arg);
+}
+
+/*
+**	proccess messages
+*/
+
+void 	ssl_prep(t_ssl *ssl)
+{
+	t_expr	*expr;
+	t_queue *args;
+	t_arg	*arg;
+
+	expr = ssl->expr;
+	args = expr->args;
+	while ((arg = ft_dequeue(args)) && !arg->prepped)
+	{
+		arg->prep(ssl, arg);
+		arg->prepped = 1;
+		ft_enqueue(args, arg, sizeof(t_arg));
+		free(arg);
+	}
 }
 
 /*
@@ -45,16 +115,18 @@ t_queue		*ft_queuenw(void *n, size_t size)
 ** implementation of message digest algorithm 
 */
 
-void	md5(t_md5 *state, t_expr *expr)
+void	md5(t_ssl *ssl)
 {
+	ft_printf("function evaluated:%s\n", ssl->expr->cmd.name);
 }
 
 /*
 **	implementation of sha-256 algorithm
 */
 
-void	sha256(t_sha256 *state, t_expr *expr)
+void	sha256(t_ssl *ssl)
 {
+	ft_printf("function evaluated:%s\n", ssl->expr->cmd.name);
 }
 
 /*
@@ -90,6 +162,7 @@ void	get_cmd(t_ssl *ssl, char **argv)
 	while (ssl->cmds[++i].name)
 		if (!ft_strncmp(ssl->cmds[i].name, argv[1], ft_strlen(ssl->cmds[i].name)))
 			ft_memcpy(&(ssl->expr->cmd), &(ssl->cmds[i]), sizeof(t_cmd));
+	ssl->eval = ssl->expr->cmd.func;
 }
 
 /*
@@ -118,16 +191,30 @@ int 	get_ops(t_ssl *ssl, char **argv, int argc)
 	return (i);
 }
 
+/*
+**	retrieve remaining arguments from the command line
+*/
+
 void	get_args(t_ssl *ssl, int idx, int argc, char **argv)
 {
-	char	*msg;
+	char	*buf;
+	char 	*tmp;
+	char 	*msg;
 	int 	fd;
 
 	idx--;
+	msg = NULL;
 	while (++idx < argc)
 	{
 		if ((fd = open(argv[idx], O_RDONLY)) != -1)
-			while (get_next_line(fd, &msg) > 0);
+			while (get_next_line(fd, &buf) > 0)
+			{
+				tmp = ft_strjoin(msg, buf);
+				if (msg)
+					free(msg);
+				msg = ft_strdup(tmp);
+				free(tmp);
+			}
 		else
 			msg = ft_strdup(argv[idx]);
 		ssl->expr->argnw(&ssl->expr, fd > 0 ? "file" : "arg", msg);
@@ -217,6 +304,9 @@ t_arg	*argument_new(t_ssl *ssl, char *msg, char *origin)
 	arg = ft_memalloc(sizeof(t_arg));
 	arg->origin = ft_strdup(origin);
 	arg->msg = ft_strdup(msg);
+	arg->prep = arg_prep;
+	arg->prepped = 0;
+	arg->block = arg_block;
 	arg->print = argument_print; 
 	return (arg);
 }
@@ -260,6 +350,9 @@ void	expression_add_argument(t_ssl *ssl, char *msg, char *origin)
 	ft_enqueue(expr->args, arg, sizeof(t_arg));
 }	
 
+/*
+**	init functions
+*/
 
 /*
 **	expression initialization function
@@ -285,11 +378,10 @@ void	ssl_init(t_ssl *ssl)
 { 
 	ssl->cmds = g_cmds;
 	ssl->read = ssl_cdl_parse;
-	ssl->eval = NULL;					/*this will be determined based on 
-										  the value of the command after
-										  parsing */
+	ssl->eval = NULL;
 	ssl->expr = ft_memalloc(sizeof(t_expr));
 	ssl->expr->init = ssl_expr_init;
+	ssl->prep = ssl_prep;
 }
 
 /*
@@ -306,6 +398,7 @@ int 	main(int argc, char ** argv)
 
 	ssl_init(&ssl);
 	ssl.read(&ssl, argc, argv);
-	//ssl.eval(&ssl);
+	ssl.prep(&ssl);
+	ssl.eval(&ssl);
 	//ssl.output(&ssl);
 }
