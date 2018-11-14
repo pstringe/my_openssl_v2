@@ -6,19 +6,57 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 11:39:49 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/05 16:16:11 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/10 16:03:41 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_openssl.h"
 
 /*
+**	a function to inspect a block's bytes
+*/
+
+void	block_inspect(t_block *block)
+{
+	int i;
+	int j;
+	int k;
+	int r;
+
+	ft_putendl("-------------------------------------------------------");
+	i = -1;
+	k = -1;
+	i = -1;
+	while (++i < 8)
+	{
+		r = k;
+		j = -1;
+		while (++j < 8)
+			ft_printf("%-4c | ", block->text[++k]);
+		ft_putchar('\n');
+		k = r;
+		j = -1;
+		while (++j < 8)
+			ft_printf("%#4hx | ", block->text[++k]);
+		ft_putchar('\n');
+		while (++j < 64)
+			ft_putchar('-');
+		ft_putchar('\n');
+	}
+}
+
+/*
 **	a function to display blocks as they are enqueued or dequeued for testing purposes
 */
 
-void 	block_print(t_block *block)
+void 	block_print(t_block *block, char *base)
 {
-	ft_printf("block:\n%s\n", block->text);
+	ft_printf("block: %d\n", block->count);
+	if (!ft_strncmp(base, "ascii", 5))
+		ft_printf("block:\n%s\n", block->text);
+	else if (!ft_strncmp(base, "inspect", 3))
+		block_inspect(block);
+	ft_printf("\n");
 }
 
 /*
@@ -29,7 +67,7 @@ void 	block_print(t_block *block)
 ** 	a new pointer to avoid a memory leak.
 */
 
-t_block 	*block_new(char **pos)
+t_block 	*block_new(char **pos, size_t count)
 {
 	t_block *block;
 	int		l;
@@ -41,7 +79,9 @@ t_block 	*block_new(char **pos)
 		block->text = ft_strnew(64);
 		ft_memcpy(block->text, *pos, (l = ft_strlen(*pos)) < 64 ? l : 64);
 		*pos += l < 64 ? l : 64;
+		block->length = l < 64 ? l : 64;
 		block->print = block_print;
+		block->count = count;
 	}
 	return (block);
 }
@@ -54,7 +94,6 @@ t_block 	*block_new(char **pos)
 void	arg_block(t_arg *arg)
 {
 	int		i;
-	int 	j;
 	char 	*msg;
 	t_block	*block;
 
@@ -62,13 +101,95 @@ void	arg_block(t_arg *arg)
 	msg = arg->msg;		/*the new block function will increment this position, 
 						we copy the pointer to maintain the original position 
 						thus avoiding a leak*/
-	i = 0;
-	while ((block = block_new(&msg)))
+	i = -1;
+	while ((block = block_new(&msg, ++i)))
 	{
-		block->print(block);
+		/* just a test to make sure the blocks are bing formed correctly */
+		block->print(block, "inspect");
+		/*end of test*/
+
 		ft_enqueue(arg->blocks, block, sizeof(t_block));
 		free(block);
 	}
+}
+
+/*
+**	pads the argument by placing a bit in front of it and appending 64 more 
+**	bits representing the total length of the message
+*/
+
+static unsigned char 	g_pad[64] = {
+	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+unsigned char	*itos(uint64_t n)
+{
+	int				i;
+	unsigned char	*s;
+
+	s = ft_memalloc(sizeof(unsigned char) * 8);
+	i = -1;
+	while (++i < 8)
+		s[i] = n & (0xff00000000000000 >> (8 * (8 - i)));
+	return (s);
+}
+
+void			arg_pad(t_arg *arg)
+{
+	int		i;	
+	char	*pad;
+	t_block *block;
+
+	pad = ft_strdup(g_pad);
+	block = arg->blocks->tail->content;
+	/* Append a single bit to the end of the last block if the length allows for it*/
+	if (block->length < 64)
+		block->text[block->length++] = 0x80;	
+	/* Otherwise create a new block and append the bit */
+	else
+		block = block_new(&pad, block->count + 1);
+	
+	/*If there's no space left to append the bits make a new block*/
+	if (64 - block->length < 8)
+	{
+		block = block_new(&pad, block->count + 1);
+		block->text[0] = 0;
+	}
+	
+	/*Iterate through the bits of the msg length 1 byte at a time and assign
+	 the masked values to the ending indecies of the padding text*/
+	
+	ft_printf("APPENDING BITS\n");
+	/*
+	i = 8;
+	while (--i)
+	{
+		block->print(block, "inspect");	
+		block->text[63 - i] = arg->length & (0x00000000000000ff << (8 * i));
+		ft_printf("{\n\tidx: %d,\n\tmask : '0xff << 8 * %d',\n\tmask value: %#x,\n\targ length: %#llx\n}\n",64 - i, i, block->length & (8 * i), arg->length);
+	}
+	*/
+	`
+	i = -1;
+	while (++i < 8)
+	{
+		block->print(block, "inspect");
+		block->text[63 - i] = arg->length & (0xff << (8 * i));
+		ft_printf("{\n\tidx: %d,\n\tmask : '0xff << 8 * %d',\n\tmask value: %#llx,\n\targ length: %#llx\n}\n",64 - i, i, block->length & (0xff << (8 * i)), arg->length);
+	}
+
+	/*just a test to make sure the padding block was propperly formed*/
+	block->print(block, "inspect");
+	/*end of test*/
+	
+	/*enqueue new block*/
+	if (block != arg->blocks->tail->content)
+		ft_enqueue(arg->blocks, block, sizeof(t_block));
+	
+	/*check to see that padding was performed correctly*/
+	arg->print(arg);
 }
 
 /*
@@ -78,7 +199,7 @@ void	arg_block(t_arg *arg)
 void	arg_prep(t_ssl *ssl, t_arg *arg)
 {
 	arg->block(arg);
-	//arg->pad(arg);
+	arg_pad(arg);
 }
 
 /*
@@ -304,6 +425,7 @@ t_arg	*argument_new(t_ssl *ssl, char *msg, char *origin)
 	arg = ft_memalloc(sizeof(t_arg));
 	arg->origin = ft_strdup(origin);
 	arg->msg = ft_strdup(msg);
+	arg->length = ft_strlen(msg);
 	arg->prep = arg_prep;
 	arg->prepped = 0;
 	arg->block = arg_block;
