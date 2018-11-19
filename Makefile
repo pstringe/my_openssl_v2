@@ -6,7 +6,7 @@
 #    By: pstringe <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/08/02 14:49:53 by pstringe          #+#    #+#              #
-#    Updated: 2018/10/31 18:41:35 by pstringe         ###   ########.fr        #
+#    Updated: 2018/11/19 09:32:54 by pstringe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,17 @@ LIB = libft.a
 INCD = ./includes/
 SRCD = ./srcs/
 LIBD = $(INCD)libft/
-SRCS = openssl
+SRCS = openssl\
+	   pad\
+	   block\
+	   sha256\
+	   md5\
+	   util\
+	   prep\
+	   parse\
+	   argument\
+	   expression
+
 OBJS = $(patsubst $(SRCD)%, %.o, $(SRCS))
 CFLAGS = -Wall -Wextra
 DFLAGS = -g
