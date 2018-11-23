@@ -6,34 +6,11 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 09:25:09 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/22 15:20:59 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/22 16:13:08 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "openssl.h"
-
-/*
-**	pads the argument by placing a bit in front of it and appending 64 more 
-**	bits representing the total length of the message
-*/
-
-static unsigned char 	g_pad[64] = {
-	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
-
-unsigned char	*itos(uint64_t n)
-{
-	int				i;
-	unsigned char	*s;
-
-	s = ft_memalloc(sizeof(unsigned char) * 8);
-	i = -1;
-	while (++i < 8)
-		s[i] = n & (0xff00000000000000 >> (8 * (8 - i)));
-	return (s);
-}
 
 static void	append_length(char *msg, uint64_t pl, uint64_t length)
 {
