@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/17 18:56:18 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/19 09:33:25 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/28 23:01:16 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@
 
 void	argument_print(t_arg *arg)
 {
-	int i;
-	int	l;
-	
 	ft_printf("arg origin:\t%s\n", arg->origin);
 	ft_printf("arg message:\t%s\n", arg->msg);
 	
@@ -43,14 +40,14 @@ void	argument_print(t_arg *arg)
 t_arg	*argument_new(t_ssl *ssl, char *msg, char *origin)
 {
 	t_arg	*arg;
-	
+(void)ssl;
 	arg = ft_memalloc(sizeof(t_arg));
 	arg->origin = ft_strdup(origin);
-	arg->msg = ft_strdup(msg);
+	arg->msg = (unsigned char*)ft_strdup(msg);
 	arg->length = ft_strlen(msg);
 	arg->prep = arg_prep;
 	arg->prepped = 0;
-	arg->block = arg_block;
+	arg->chunk = arg_chunk;
 	arg->print = argument_print; 
 	return (arg);
 }

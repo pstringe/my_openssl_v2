@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/17 18:54:27 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/19 09:33:27 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/28 23:01:14 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,12 @@ void	expression_print(t_ssl *ssl)
 **	function for adding an argument to the args queue based on msg text
 */
 
-void	expression_add_argument(t_ssl *ssl, char *msg, char *origin)
+void	expression_add_argument(t_expr *expr, char *msg, char *origin)
 {
-	t_expr	*expr;
 	t_arg	*arg;
 	
 	expr = ssl->expr;
-	arg = argument_new(msg, origin, msg);
+	arg = argument_new(ssl, origin, msg);
 	ft_enqueue(expr->args, arg, sizeof(t_arg));
 }	
 

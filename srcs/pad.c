@@ -6,13 +6,13 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 09:25:09 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/22 16:47:41 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/28 22:28:55 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "openssl.h"
 
-static void	append_length(char *msg, uint64_t pl, uint64_t length)
+static void	append_length(unsigned char *msg, uint64_t pl, uint64_t length)
 {
 	int	i;
 
@@ -25,12 +25,11 @@ static void	append_length(char *msg, uint64_t pl, uint64_t length)
 void			arg_pad(t_arg *arg)
 {
 	uint64_t 			l;
-	uint64_t			i;
 	unsigned char		*pad;
 
 	l = arg->length - 1;
 	while (((++l * 8) % 512));
-	pad = ft_strnew(l);
+	pad = (unsigned char*)ft_strnew(l);
 	pad[arg->length] = 128;
 	ft_memcpy(pad, arg->msg, arg->length);
 	append_length(pad, l, arg->length);

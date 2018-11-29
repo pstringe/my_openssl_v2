@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 15:13:51 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/04 10:40:14 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/25 17:36:07 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,5 @@
 # include "types/s_md5.h"
 # include "types/s_expr.h"
 
-void	md5(t_ssl *ssl);
+void	md5(t_ssl *ssl, t_arg *arg);
 #endif
