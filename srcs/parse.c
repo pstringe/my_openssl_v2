@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/17 18:58:26 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/28 23:01:15 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/30 09:43:38 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	get_stdin(t_ssl *ssl)
 	expr->init(ssl);
 	msg = NULL;
 	if (get_next_line(0, &msg) >= 0)
-		expr->argnw(expr, "stdin", msg);
+		expr->argnw(ssl, "stdin", msg);
 }
 
 /*
@@ -97,7 +97,7 @@ void	get_args(t_ssl *ssl, int idx, int argc, char **argv)
 			}
 		else
 			msg = ft_strdup(argv[idx]);
-		ssl->expr->argnw(ssl->expr, fd > 0 ? "file" : "arg", msg);
+		ssl->expr->argnw(ssl, fd > 0 ? "file" : "arg", msg);
 	}
 }
 
@@ -114,7 +114,7 @@ void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
 	get_stdin(ssl);
 	
 	/*Just a test to make sure the msg is being enqueued properly*/
-	ssl->expr->print(ssl->expr);
+	ssl->expr->print(ssl);
 	/*end of test*/
 
 	get_cmd(ssl, argv);
@@ -131,6 +131,6 @@ void	ssl_cdl_parse(t_ssl *ssl, int argc, char **argv)
 	/*end of test*/
 
 	/*Another test to see that the remaining arguments were enqueued*/
-	ssl->expr->print(ssl->expr);
+	ssl->expr->print(ssl);
 	/*end of test*/
 }
