@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 12:22:28 by pstringe          #+#    #+#             */
-/*   Updated: 2018/12/01 18:30:35 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/12/01 19:00:55 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ typedef struct	s_ssl
 typedef struct	s_md5
 {
 	uint32_t	s[64];		//shift amounts
-	uint32_t	K[64];		//constants
+	uint32_t	k[64];		//constants
 
 	//initial resigter constants
 	int			a0;
@@ -74,13 +74,17 @@ typedef struct	s_md5
 	int			d0;
 
 	//registers
-	int			A;
-	int			B;
-	int			C;
-	int			D;
+	int			a;
+	int			b;
+	int			c;
+	int			d;
+
+	//result of compression funtion
+	uint32_t	f;
 
 	//message blocks
-	uint32_t	M[16];
+	uint32_t	m[16];
+	uint32_t	g;	
 
 }				t_md5;
 
