@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 09:17:27 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/28 22:42:01 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/12/01 21:01:59 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	arg_chunk(t_arg *arg)
 	while ((chunk = chunk_new(&msg, ++i)))
 	{
 		/* just a test to make sure the blocks are bing formed correctly */
-		chunk->print(chunk, "inspect");
+		//chunk->print(chunk, "inspect");
 		/*end of test*/
 
 		ft_enqueue(arg->chunks, chunk, sizeof(t_chunk));
@@ -62,6 +62,8 @@ void 	ssl_prep(t_ssl *ssl)
 	{
 		arg->prep(ssl, arg);
 		ft_enqueue(args, arg, sizeof(t_arg));
+		/*A test to make sure execution reaches this point every time*/
+		
 		free(arg);
 	}
 }

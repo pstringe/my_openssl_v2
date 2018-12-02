@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 11:39:49 by pstringe          #+#    #+#             */
-/*   Updated: 2018/12/01 18:19:55 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/12/01 21:01:53 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,15 @@ void	ssl_init(t_ssl *ssl)
 int 	main(int argc, char ** argv)
 {
 	t_ssl	ssl;
+	t_queue *args;
+	t_arg	*arg;
 
 	ssl_init(&ssl);
 	ssl.read(&ssl, argc, argv);
 	ssl.prep(&ssl);
-	//ssl.eval(&ssl);
+
+	args = ssl.expr->args;
+	while ((arg = ft_dequeue(args)))
+		ssl.eval(&ssl, arg);
 	//ssl.output(&ssl);
 }

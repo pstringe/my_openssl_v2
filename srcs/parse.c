@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/17 18:58:26 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/30 09:43:38 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/12/01 21:01:51 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,10 @@ void	get_cmd(t_ssl *ssl, char **argv)
 	i = -1;
 	while (ssl->cmds[++i].name)
 		if (!ft_strncmp(ssl->cmds[i].name, argv[1], ft_strlen(ssl->cmds[i].name)))
+		{
 			ft_memcpy(&(ssl->expr->cmd), &(ssl->cmds[i]), sizeof(t_cmd));
-	ssl->eval = ssl->expr->cmd.func;
+			ssl->eval = ssl->cmds[i].func;
+		}
 }
 
 /*

@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 12:22:28 by pstringe          #+#    #+#             */
-/*   Updated: 2018/12/01 18:30:35 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/12/01 21:02:08 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ typedef	struct	s_expr t_expr;
 typedef struct	s_cmd	t_cmd;
 typedef struct	s_arg	t_arg;
 typedef struct	s_ssl	t_ssl;
+typedef struct	s_chunk	t_chunk;
+typedef struct	s_md5	t_md5;
 
 
 typedef struct	s_cmd
@@ -64,8 +66,8 @@ typedef struct	s_ssl
 
 typedef struct	s_md5
 {
-	uint32_t	s[64];		//shift amounts
-	uint32_t	K[64];		//constants
+	uint32_t	*s;		//shift amounts
+	uint32_t	*k;		//constants
 
 	//initial resigter constants
 	int			a0;
@@ -74,14 +76,19 @@ typedef struct	s_md5
 	int			d0;
 
 	//registers
-	int			A;
-	int			B;
-	int			C;
-	int			D;
+	int			a;
+	int			b;
+	int			c;
+	int			d;
+
+	//result of compression funtion
+	uint32_t	f;
 
 	//message blocks
-	uint32_t	M[16];
+	uint32_t	m[16];
+	uint32_t	g;	
 
+	void		(*block)(t_md5*, t_chunk *c);
 }				t_md5;
 
 typedef struct	s_arg
@@ -91,7 +98,7 @@ typedef struct	s_arg
 	unsigned char		*msg;
 	uint64_t	length;
 	t_queue 	*chunks;
-	int32_t		hash[4];
+	uint32_t	md5_hash[4];
 
 	void		(*prep)(struct s_ssl*, struct s_arg*);
 	void		(*chunk)(struct s_arg*);
