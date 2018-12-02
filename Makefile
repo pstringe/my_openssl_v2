@@ -6,7 +6,7 @@
 #    By: pstringe <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/08/02 14:49:53 by pstringe          #+#    #+#              #
-#    Updated: 2018/11/19 09:32:54 by pstringe         ###   ########.fr        #
+#    Updated: 2018/11/28 21:56:52 by pstringe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRCD = ./srcs/
 LIBD = $(INCD)libft/
 SRCS = openssl\
 	   pad\
-	   block\
+	   chunk\
 	   sha256\
 	   md5\
 	   util\
@@ -29,7 +29,7 @@ SRCS = openssl\
 	   expression
 
 OBJS = $(patsubst $(SRCD)%, %.o, $(SRCS))
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -Werror
 DFLAGS = -g
 SFLAGS = -fsanitize=address -fno-omit-frame-pointer
 

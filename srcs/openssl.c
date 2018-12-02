@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 11:39:49 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/19 12:24:23 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/30 12:33:48 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ int 	main(int argc, char ** argv)
 	ssl_init(&ssl);
 	ssl.read(&ssl, argc, argv);
 	ssl.prep(&ssl);
-	ssl.eval(&ssl);
+	//ssl.eval(&ssl);
 	//ssl.output(&ssl);
 }

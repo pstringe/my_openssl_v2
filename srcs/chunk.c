@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   block.c                                            :+:      :+:    :+:   */
+/*   chunk.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/17 19:06:16 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/19 09:33:30 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/28 22:36:52 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,21 @@
 ** 	a new pointer to avoid a memory leak.
 */
 
-t_block 	*block_new(char **pos, size_t count)
+t_chunk 	*chunk_new(unsigned char **pos, size_t count)
 {
-	t_block *block;
+	t_chunk *chunk;
 	int		l;
 
-	block = NULL;
+	chunk = NULL;
 	if (**pos)
 	{
-		block = ft_memalloc(sizeof(t_block));
-		block->text = ft_strnew(64);
-		ft_memcpy(block->text, *pos, (l = ft_strlen(*pos)) < 64 ? l : 64);
+		chunk = ft_memalloc(sizeof(t_chunk));
+		chunk->text = ft_strnew(64);
+		ft_memcpy(chunk->text, *pos, (l = ft_strlen((const char*)*pos)) < 64 ? l : 64);
 		*pos += l < 64 ? l : 64;
-		block->length = l < 64 ? l : 64;
-		block->print = block_print;
-		block->count = count;
+		chunk->length = l < 64 ? l : 64;
+		chunk->print = chunk_print;
+		chunk->count = count;
 	}
-	return (block);
+	return (chunk);
 }

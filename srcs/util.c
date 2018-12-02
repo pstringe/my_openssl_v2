@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 09:15:18 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/22 14:31:02 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/30 10:46:07 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 **	a function to inspect a block's bytes
 */
 
-void	block_inspect(t_block *block)
+void	chunk_inspect(t_chunk *chunk)
 {
 	int i;
 	int j;
@@ -32,12 +32,12 @@ void	block_inspect(t_block *block)
 		r = k;
 		j = -1;
 		while (++j < 8)
-			ft_printf("%-4c | ", block->text[++k]);
+			ft_printf("%-4c | ", chunk->text[++k]);
 		ft_putchar('\n');
 		k = r;
 		j = -1;
 		while (++j < 8)
-			ft_printf("%#4hx | ", block->text[++k]);
+			ft_printf("%#4hx | ", chunk->text[++k]);
 		ft_putchar('\n');
 		while (++j < 64)
 			ft_putchar('-');
@@ -49,13 +49,13 @@ void	block_inspect(t_block *block)
 **	a function to display blocks as they are enqueued or dequeued for testing purposes
 */
 
-void 	block_print(t_block *block, char *base)
+void 	chunk_print(t_chunk *chunk, char *base)
 {
-	ft_printf("block: %d\n", block->count);
+	ft_printf("block: %d\n", chunk->count);
 	if (!ft_strncmp(base, "ascii", 5))
-		ft_printf("block:\n%s\n", block->text);
+		ft_printf("block:\n%s\n", chunk->text);
 	else if (!ft_strncmp(base, "inspect", 3))
-		block_inspect(block);
+		chunk_inspect(chunk);
 	ft_printf("\n");
 }
 

@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 14:40:26 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/06 18:12:53 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/11/25 17:32:45 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ typedef struct	s_arg
 	char		*origin;
 	char		*msg;
 	uint64_t	length;
-	t_queue 	*blocks;
+	t_queue 	*chunks;
 	int32_t		hash[4];
 	
 	void		(*prep)(struct s_ssl*, struct s_arg*);
-	void		(*block)(struct t_arg*);
+	void		(*chunk)(struct t_arg*);
 	void		(*print)(struct s_arg*);
 }				t_arg;
 #endif
