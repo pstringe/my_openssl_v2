@@ -6,12 +6,12 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:13:13 by pstringe          #+#    #+#             */
-/*   Updated: 2018/11/03 21:55:31 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/12/09 14:16:44 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
+/*
 int		ft(char **arr, char **line)
 {
 	char *n;
@@ -60,3 +60,4 @@ int		get_next_line(const int fd, char **line)
 	}
 	return (ft(&arr[fd], line));
 }
+*/

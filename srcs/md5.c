@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 09:19:39 by pstringe          #+#    #+#             */
-/*   Updated: 2018/12/01 21:01:55 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/12/09 15:19:45 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,10 +143,13 @@ void	md5(t_ssl *ssl, t_arg *arg)
 	}
 
 	//append values to digest in little-endian order
+	/*
 	arg->md5_hash[0] = m.a0;
 	arg->md5_hash[1] = m.b0;
 	arg->md5_hash[2] = m.c0;
 	arg->md5_hash[3] = m.d0;
-
-	ft_printf("md5: %s %x%x%x%x\n", ssl->expr->cmd.name, m.a0, m.b0, m.c0, m.d0);
+	*/
+	
+	arg->md5_hash = ft_sprintf("%x%x%x%x", m.a0, m.b0, m.c0, m.d0);
+	ft_printf("%s\n",arg->md5_hash);
 }

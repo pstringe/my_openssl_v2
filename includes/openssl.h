@@ -6,7 +6,7 @@
 /*   By: pstringe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 12:22:28 by pstringe          #+#    #+#             */
-/*   Updated: 2018/12/01 21:02:08 by pstringe         ###   ########.fr       */
+/*   Updated: 2018/12/09 14:23:48 by pstringe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,18 @@ typedef struct	s_ssl	t_ssl;
 typedef struct	s_chunk	t_chunk;
 typedef struct	s_md5	t_md5;
 
-
+/*
+** 	A structure to use in the command dispatcher
+*/
 typedef struct	s_cmd
 {
 	char		*name;
 	void 		(*func)(t_ssl*, t_arg*);
 }				t_cmd;
+
+/*
+**	stores all the info about inputs arguments and the function to be evaluated
+*/
 
 typedef struct 	s_expr
 {
@@ -53,16 +59,24 @@ typedef struct 	s_expr
 	void 		(*init)(struct s_ssl*);
 }				t_expr;
 
+/*
+**	main struct
+*/
 
 typedef struct	s_ssl
 {
 	t_expr		*expr;
 	t_cmd		*cmds;
+	
 	void		(*read)(struct s_ssl*, int, char**);
 	void		(*prep)(struct s_ssl*);
 	void		(*eval)(struct s_ssl*, t_arg*);
 	void		(*output)(struct s_ssl*);
 }				t_ssl;
+
+/*
+** contains all neccessary variable and constants to evaluate md5;
+*/
 
 typedef struct	s_md5
 {
@@ -98,7 +112,7 @@ typedef struct	s_arg
 	unsigned char		*msg;
 	uint64_t	length;
 	t_queue 	*chunks;
-	uint32_t	md5_hash[4];
+	char		*md5_hash;
 
 	void		(*prep)(struct s_ssl*, struct s_arg*);
 	void		(*chunk)(struct s_arg*);
